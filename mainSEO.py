@@ -19,8 +19,7 @@ def main():
     try:
        PC1 = G_PC.mainRun(kw_list)
     except Exception as e:
-        print(e)
-        pass
+        raise
     
     try:
         SP1 = G_SP.mainRun(kw_list)

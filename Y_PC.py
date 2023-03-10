@@ -66,7 +66,7 @@ def getInfo(ad_url):
         chrome.driver.switch_to.window(chrome.driver.window_handles[1])
         chrome.get(ad_url[y])
 
-        html_text = chrome.driver.find_element_by_xpath('//body').text
+        html_text = chrome.driver.find_element(By.XPATH, '//body').text
         try:
             name = mostFrequent(re.findall(r"\株式会社\w+", html_text))
             name_list.append(name)
