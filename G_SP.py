@@ -1,22 +1,10 @@
 from _handyFunc.get_driver import *
+from mainfuncSEO import getInfo
 from decouple import config
-import urllib
-import re
 import pandas as pd
-from statistics import mode
-from urllib.parse import urlparse
+import urllib
 
 chrome = WebDriver(proxy=config('proxy'))
-
-def mostFrequent(list):
-    try:
-        if mode(list) != 'Info not found':
-            return mode(list)
-        else: 
-            return next(item for item in list if item != 'Info not found')
-    except:
-        print('Most frequent item not found! Returning the first item!')
-        return list[0]
 
 def getElement(title_xpath, url_xpath, des_xpath, page_xpath):
     print('Getting the elements')
@@ -46,48 +34,6 @@ def getElement(title_xpath, url_xpath, des_xpath, page_xpath):
     # nL = len(name_list)
     tL = len(title_list)
     return title_list, ad_url, des_list, page_list, tL, counter
-
-def getInfo(ad_url):
-    print('Getting ads info')
-    lpURL_list = []
-    name_list = []
-    tel_list = []
-    mail_list = []
-    for y in range(len(ad_url)):
-        chrome.driver.execute_script(script='window.open()')
-        chrome.driver.switch_to.window(chrome.driver.window_handles[1])
-        chrome.get(ad_url[y])
-
-        html_text = chrome.driver.find_element(By.XPATH, '//body').text
-        try:
-            name = mostFrequent(re.findall(r"\株式会社\w+", html_text))
-            name_list.append(name)
-        except Exception:
-            name_list.append('Info not found')
-            pass
-
-        try:
-            tel = mostFrequent(re.findall("(\d{4}[-\.\s]??\d{3}[-\.\s]??\d{3}[-\.\s]??)", html_text))
-            tel_list.append(tel)
-        except Exception:
-            tel_list.append('Info not found')
-            pass
-
-        try:
-            mail = mostFrequent(re.findall("[\w\.-]+@[\w\.-]+\.\w+", html_text))
-            mail_list.append(mail)
-        except Exception:
-            mail_list.append('Info not found')
-            pass
-
-        # get protocol + host name from ad_url
-        parsed_url = urlparse(chrome.driver.current_url)
-        lpURL_list.append('{uri.scheme}://{uri.netloc}/'.format(uri=parsed_url))
-        
-        chrome.driver.close()
-        chrome.driver.switch_to.window(chrome.driver.window_handles[0])
-    
-    return name_list, tel_list, mail_list, lpURL_list
 
 def mainRun(kw_list):
     chrome.get_chrome_sp()
@@ -130,12 +76,12 @@ def mainRun(kw_list):
                         x += 1
 
                     print('Putting in main lists')
-                    info = getInfo(data[1])
+                    info = getInfo(chrome, data[1])
 
-                    name_main.extend(info[0])
-                    tel_main.extend(info[1])
-                    mail_main.extend(info[2])
-                    lpUrl_main.extend(info[3])
+                    name_main.extend(info['name_list'])
+                    tel_main.extend(info['tel_list'])
+                    mail_main.extend(info['mail_list'])
+                    lpUrl_main.extend(info['lpURL_list'])
 
                     title_main.extend(data[0])
                     des_main.extend(data[2])

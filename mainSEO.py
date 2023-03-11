@@ -2,11 +2,12 @@ import os
 import time
 import glob
 import pandas as pd
+from datetime import datetime
 import G_PC, G_SP, Y_PC, Y_SP
 
 def getMaster():
     basedir = os.path.dirname(os.path.abspath(__file__))
-    master_files = glob.glob(os.path.join(basedir, 'Input\\', 'SEO_Report.xlsx'))
+    master_files = glob.glob(os.path.join(basedir, 'SEO_Report.xlsx'))
 
     dataframe = pd.read_excel(master_files[0])
     kw_list = dataframe['Target_keyword'].tolist()
@@ -49,4 +50,9 @@ def main():
     return final_data
 
 final_data = main()
-final_data.to_csv('out.csv', encoding='cp932')
+
+path = os.getcwd() + 'Output\\'
+currDate = datetime.today().strftime('%Y%m%d')
+outName = f'SEO_Report_{currDate}.csv'
+
+final_data.to_csv(f'{path}/{outName}', encoding='cp932')
