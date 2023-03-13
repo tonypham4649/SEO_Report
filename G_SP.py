@@ -1,10 +1,11 @@
 from _handyFunc.get_driver import *
 from mainfuncSEO import getInfo
-from decouple import config
 import pandas as pd
 import urllib
 
-chrome = WebDriver(proxy=config('proxy'))
+# proxy for location
+proxy = '10.141.64.176:3128'
+chrome = WebDriver(proxy=proxy)
 
 def getElement(title_xpath, url_xpath, des_xpath, page_xpath):
     print('Getting the elements')

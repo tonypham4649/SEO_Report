@@ -1,6 +1,5 @@
 from _handyFunc.get_driver import *
 from mainfuncSEO import getInfo
-from decouple import config
 import pandas as pd
 import urllib
 
