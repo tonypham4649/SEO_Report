@@ -38,6 +38,7 @@ class WebDriver:
         chrome_options.add_argument('--disable-infobars')
         chrome_options.add_argument('--start-maximized')
         chrome_options.add_argument('--log-level=3')
+        chrome_options.add_argument('--disable-notifications')
 
         if self.proxy:
             print("add proxy")
@@ -51,6 +52,10 @@ class WebDriver:
                                                    # "disable-client-side-phishing-detection"
                                                ]
                                                )
+
+        prefs = {"profile.default_content_setting_values.geolocation" :2}
+        chrome_options.add_experimental_option("prefs",prefs)
+
 
         chrome_options.add_argument("--incognito")
         # print("Chrome path: {}".format(self.exe_path))

@@ -18,29 +18,27 @@ def getElement(title_xpath, url_xpath, des_xpath, page_xpath):
     try:
         popupEle = "//*[@class='LogoContainer']//button[@class='sw-Perorin__closeButton cl-noclick-log']"
         chrome.click_element_by_xpath(popupEle)
-    except Exception: 
+    except Exception:
         pass
     
     try:
         for title in chrome.get_elements_by_xpath(title_xpath):
             title_list.append(title.text)
-
+    except:
+        print('No ad found!')
+        return None
+    else:
+        # nL = len(name_list)
+        tL = len(title_list)
         for url in chrome.get_elements_by_xpath(url_xpath):
             counter += 1
             ad_url.append(url.get_attribute('href'))
-
         for des in chrome.get_elements_by_xpath(des_xpath):
             des_list.append(des.text)
-
         for x in range(counter):
             x += 1
             page_list.append(chrome.get_element_by_xpath(page_xpath).text)
-            
-    except Exception:
-        print('Found no ads')
-    
-    # nL = len(name_list)
-    tL = len(title_list)
+        
     return title_list, ad_url, des_list, page_list, tL, counter
 
 def mainRun(kw_list):
@@ -73,17 +71,18 @@ def mainRun(kw_list):
         while page <= 3:
             print(f'Page: {page}')
             tries = 0
-            while tries <= 4:
+            while tries <= 3:
                 tries += 1
-                print(f'Try counter - {tries}')
-                
+                print(f'Tries counter - {tries}')
+
                 data = getElement(title_xpath, url_xpath, des_xpath, page_xpath)
-                if data[4] == data[5]:
+                if data == None:
+                    break
+                elif data[4] == data[5]:
                     for x in range(data[5]):
                         keyword_main.append(kw)
                         x += 1
-
-                    print('Putting in main lists')
+                    print('Add to main lists')
                     info = getInfo(chrome, data[1])
 
                     name_main.extend(info['name_list'])
@@ -94,14 +93,16 @@ def mainRun(kw_list):
                     title_main.extend(data[0])
                     des_main.extend(data[2])
                     page_main.extend(data[3])
-
-                    page += 1
-                    chrome.click_element_by_xpath(next_xpath)
                     break
             else: 
+                pass
+            
+            if page == 3:
+                break
+            else:
                 page += 1
                 chrome.click_element_by_xpath(next_xpath)
-                break
+                pass
     
     chrome.driver.close()
     

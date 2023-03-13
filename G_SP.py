@@ -13,26 +13,27 @@ def getElement(title_xpath, url_xpath, des_xpath, page_xpath):
     des_list = []
     page_list = []
     counter = 0
+    try:
+        for tptitle in chrome.get_elements_by_xpath(title_xpath):
+            title_list.append(tptitle.text)
+    except Exception:
+        print('No ad found!')
+        return None
+    else:        
+        # nL = len(name_list)
+        tL = len(title_list)
+        for url in chrome.get_elements_by_xpath(url_xpath):
+            counter += 1
+            ad_url.append(url.get_attribute('href'))
+        for des in chrome.get_elements_by_xpath(des_xpath):
+            des_list.append(des.text)
+        for x in range(counter):
+            x += 1
+            try:
+                page_list.append(chrome.get_element_by_xpath(page_xpath).text.replace('ページ ',''))
+            except Exception:
+                page_list.append('1')
 
-    for tptitle in chrome.get_elements_by_xpath(title_xpath):
-        title_list.append(tptitle.text)
-
-    for url in chrome.get_elements_by_xpath(url_xpath):
-        counter += 1
-        ad_url.append(url.get_attribute('href'))
-
-    for des in chrome.get_elements_by_xpath(des_xpath):
-        des_list.append(des.text)
-
-    for x in range(counter):
-        x += 1
-        try:
-            page_list.append(chrome.get_element_by_xpath(page_xpath).text.replace('ページ ',''))
-        except Exception:
-            page_list.append('1')
-
-    # nL = len(name_list)
-    tL = len(title_list)
     return title_list, ad_url, des_list, page_list, tL, counter
 
 def mainRun(kw_list):
@@ -70,12 +71,13 @@ def mainRun(kw_list):
                 print(f'Try counter - {tries}')
                 
                 data = getElement(title_xpath, url_xpath, des_xpath, page_xpath)
-                if data[4] == data[5]:
+                if data == None:
+                    break
+                elif data[4] == data[5]:
                     for x in range(data[5]):
                         keyword_main.append(kw)
                         x += 1
-
-                    print('Putting in main lists')
+                    print('Add to main lists')
                     info = getInfo(chrome, data[1])
 
                     name_main.extend(info['name_list'])
@@ -86,14 +88,16 @@ def mainRun(kw_list):
                     title_main.extend(data[0])
                     des_main.extend(data[2])
                     page_main.extend(data[3])
-
-                    page += 1
-                    chrome.click_element_by_xpath(next_xpath)
                     break
             else: 
+                pass
+
+            if page == 3:
+                break
+            else:
                 page += 1
                 chrome.click_element_by_xpath(next_xpath)
-                break
+                pass
     
     chrome.driver.close()
     
