@@ -20,22 +20,27 @@ def main():
     try:
        PC1 = G_PC.mainRun(kw_list)
     except Exception:
-        raise
+        print('No GG_PC!')
+        pass
     
     try:
         SP1 = G_SP.mainRun(kw_list)
     except Exception:
-        raise
+        print('No GG_SP!')
+        pass
     
     try:
         PC2 = Y_PC.mainRun(kw_list)
     except Exception:
-        raise
+        print('No YH_PC!')
+        pass
 
     try:
         SP2 = Y_SP.mainRun(kw_list)
     except Exception:
-        raise
+        print('No YH_SP!')
+        pass
+    
 
     data = pd.concat([PC1, SP1, PC2, SP2], ignore_index=True).set_index('keyword')
     

@@ -1,10 +1,13 @@
 import os
 import sys
 import json
+import pickle
 import shutil
 import requests
 from glob import glob
 from time import sleep
+from urllib3.exceptions import MaxRetryError
+
 from selenium import webdriver
 from datetime import datetime, timedelta
 from selenium.webdriver.common.by import By
@@ -13,10 +16,10 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
-import pickle
-from urllib3.exceptions import MaxRetryError
 
 
 class WebDriver:
@@ -29,17 +32,21 @@ class WebDriver:
 
     def get_chrome(self):
         chrome_options = webdriver.ChromeOptions()
+        
+        # caps = DesiredCapabilities().CHROME
+        # caps["pageLoadStrategy"] = 'none'
 
         if self.download_dir is not None:
             prefs = {"download.default_directory": os.path.abspath(
                 self.download_dir)}
             chrome_options.add_experimental_option("prefs", prefs)
-
+        
+        # chrome_options.add_argument(f'desired_capabilities={caps}')
         chrome_options.add_argument('--disable-infobars')
         chrome_options.add_argument('--start-maximized')
         chrome_options.add_argument('--log-level=3')
         chrome_options.add_argument('--disable-notifications')
-
+        # chrome_options.add_argument('--headless')
         if self.proxy:
             print("add proxy")
             chrome_options.add_argument(f'--proxy-server=http://{self.proxy}')
@@ -68,6 +75,9 @@ class WebDriver:
     def get_chrome_sp(self):
         chrome_options = webdriver.ChromeOptions()
 
+        # caps = DesiredCapabilities().CHROME
+        # caps["pageLoadStrategy"] = 'none'
+
         mobile_emulation = {
             "deviceMetrics": { "width": 375, "height": 812, "pixelRatio": 3.0 },
             "userAgent": "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19"}
@@ -76,10 +86,12 @@ class WebDriver:
             prefs = {"download.default_directory": os.path.abspath(
                 self.download_dir)}
             chrome_options.add_experimental_option("prefs", prefs)
-
+        
+        # chrome_options.add_argument(f'desired_capabilities={caps}')
         chrome_options.add_argument('--disable-infobars')
         chrome_options.add_argument('--start-maximized')
         chrome_options.add_argument('--log-level=3')
+        # chrome_options.add_argument('--headless')
 
         if self.proxy:
             print("add proxy")

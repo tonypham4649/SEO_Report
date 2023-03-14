@@ -15,6 +15,7 @@ def mostFrequent(list):
 
 def getInfo(chrome, ad_url):
     print('Getting ads info')
+
     lpURL_list = []
     name_list = []
     tel_list = []
@@ -23,6 +24,9 @@ def getInfo(chrome, ad_url):
         chrome.driver.execute_script(script='window.open()')
         chrome.driver.switch_to.window(chrome.driver.window_handles[1])
         chrome.get(ad_url[y])
+        
+        chrome.driver.implicitly_wait(5)
+        chrome.driver.execute_script("window.stop();")
         
         html_text = chrome.driver.find_element(By.XPATH, '//body').text
         try:
