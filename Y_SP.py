@@ -120,5 +120,3 @@ def mainRun(kw_list):
         }
     )
     return dataPd
-
-mainRun(['リクナビnext'])
