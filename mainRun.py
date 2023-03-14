@@ -104,7 +104,7 @@ def saveToCSV(data):
 
     return final_data
 
-if __name__ == '__main__':
+def masterRun():
     # start timer
     start = time.time()
 
